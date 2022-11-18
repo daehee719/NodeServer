@@ -1,6 +1,7 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -9,23 +10,30 @@ public class NetworkManager : MonoBehaviour
 {
     private bool _isLoading = false;
     [SerializeField]
-    private Image _targetImage;
-    void Start()
+    public Image _targetImage;
+
+    private void Start()
     {
-        
+        //UnityWebRequest webReq = UnityWebRequestTexture.GetTexture("http://localhost:50000/imagelist");
+        //string msgList = webReq.downloadHandler.text;
+        //ImageListVO vo = JsonUtility.FromJson<ImageListVO>(msgList);
+        //for (int i = 0; i < vo.imageCount; i++)
+        //{
+            
+        //}
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump"))
         {
             if (_isLoading) return;
             _isLoading = true;
             Debug.Log("Loading Data From Server");
             StartCoroutine(GetDataFromServer());
         }
-        if(Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A))
         {
             if (_isLoading) return;
             _isLoading = true;
@@ -38,15 +46,15 @@ public class NetworkManager : MonoBehaviour
     {
         UnityWebRequest webReq = UnityWebRequestTexture.GetTexture("http://localhost:50000/image");
         yield return webReq.SendWebRequest();
-        if (webReq.result == UnityWebRequest.Result.Success)
-        {
+        //if (webReq.result == UnityWebRequest.Result.Success)
+        //{
             Texture2D texture = ((DownloadHandlerTexture)webReq.downloadHandler).texture;
 
             Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
 
             Debug.Log(texture);
             _targetImage.sprite = sprite;
-        }
+        //}
         _isLoading = false;
         Debug.Log("Loading complete");
     }
@@ -57,16 +65,16 @@ public class NetworkManager : MonoBehaviour
 
         yield return webReq.SendWebRequest();
 
-        if(webReq.result == UnityWebRequest.Result.Success)
-        {
+        //if (webReq.result == UnityWebRequest.Result.Success)
+        //{
             string msg = webReq.downloadHandler.text;
             Debug.Log(msg);
             DataVO vo = JsonUtility.FromJson<DataVO>(msg);
+            // ë“¤ì–´ì˜¨ ë°ì´í„°ë¥¼ íŒŒì‹±í•´ì„œ
+            // 3ëª…ì„ ìˆœì„œëŒ€ë¡œ ì¶œë ¥
             foreach (User user in vo.users)
                 Debug.Log(user.name);
-        }
-        // µé¾î¿Â µ¥ÀÌÅÍ¸¦ ÆÄ½ÌÇØ¼­
-        // 3¸íÀ» ¼ø¼­´ë·Î Ãâ·Â
+        //}
 
         _isLoading = false;
         Debug.Log("Loading complete");
